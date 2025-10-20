@@ -21,9 +21,12 @@ pipeline {
         }  
       stage('Docker Build and Push'){
         steps {
-          sh "printenv"
-          sh "docker build -t xkolumber/numeruc-app:""${GIT_COMMIT}"" ."
-          sh "docker push xkolumber/numeruc-app:""${GIT_COMMIT}"""
+          withDockerRegistry(credentialsId: "docker-hub", url: "") {
+              sh "printenv"
+              sh "docker build -t xkolumber/numeric-app:""${GIT_COMMIT}"" ."
+              sh "docker push xkolumber/numeric-app:""${GIT_COMMIT}"""
+            }
+        
         }
       }
     }
