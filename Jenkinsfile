@@ -22,12 +22,17 @@ pipeline {
 
       stage('SonarQube - SAST') {
           steps{
+            withSonarQubeEnv('SonarQube'){
             sh "mvn clean verify sonar:sonar \
   -Dsonar.projectKey=numeric-application \
   -Dsonar.projectName='numeric-application' \
   -Dsonar.host.url=http://lubos-devops.westeurope.cloudapp.azure.com:9000 \
   -Dsonar.token=sqp_3d70779fd0433b71969f35c9da08f0212cfdbd14"
+            }
+            timeout(time: 1, unit: 'MINUTES') {
+              waitForQualityGate abortPipeline: true
           }
+      }
       }
         
       stage('Docker Build and Push'){
